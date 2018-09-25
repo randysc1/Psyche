@@ -13,7 +13,10 @@ public class enemyDamage : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		timer = 0f;
-		enemyR = GetComponent<Renderer>();
+		if(this.tag == "meleeEnemy" || this.tag == "rangedEnemy")
+			enemyR = GetComponentInChildren<Renderer>();
+		else
+			enemyR = GetComponent<Renderer>();
 	}
 	
 	// Update is called once per frame
@@ -23,7 +26,7 @@ public class enemyDamage : MonoBehaviour {
 			timer += Time.deltaTime;
 			if(timer >= hitTime){
 				Debug.Log ("change color");
-				enemyR.material.color = Color.white;
+				enemyR.material.color = Color.grey;
 				hit = false;
 				timer = 0f;
 			}

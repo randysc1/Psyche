@@ -54,6 +54,7 @@
      <Compile Include="Assets\controller.cs" />
      <Compile Include="Assets\Controller1.cs" />
      <Compile Include="Assets\enemyDamage.cs" />
+     <Compile Include="Assets\myAICharacterController.cs" />
      <Compile Include="Assets\Restart.cs" />
  <Reference Include="UnityEditor.StandardEvents">
  <HintPath>C:/Users/Donna/Documents/Psyche/Psyche/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>

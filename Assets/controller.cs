@@ -21,6 +21,12 @@ public class controller : MonoBehaviour {
 	//public GameObject hero;
 	public Renderer heroR;
 
+	public bool hit;
+	public float hitTime = 1f;
+	public float timer;
+
+	public ParticleSystem PS;
+
 
 	// Use this for initialization
 	void Start () {
@@ -35,6 +41,11 @@ public class controller : MonoBehaviour {
 		initialHBar = new Vector3 (HBar.GetComponent<RectTransform> ().sizeDelta.x, HBar.GetComponent<RectTransform>().sizeDelta.y);
 		numHits = 10;
 
+		if (PS != null) {
+			PS.Play();
+			PS.Pause();
+		}
+
 		//heroM = new Material ();
 		//heroM.shader = Shader.Find ("EthanGrey");
 		//heroS = Shader.Find ("EthanGrey");
@@ -42,7 +53,8 @@ public class controller : MonoBehaviour {
 		//Renderer heroR = hero.GetComponent<Renderer> ();
 		heroR = GetComponentInChildren<Renderer>();
 
-		//meleeBox.SetActive(false);
+		hit = false;
+		timer = 0f;
 	}
 	
 	// Update is called once per frame
@@ -88,15 +100,49 @@ public class controller : MonoBehaviour {
 			heroR.material.color = Color.red;
 		}
 
+		if (hit == true) {
+			timer += Time.deltaTime;
+			if(timer >= hitTime && phase != 3){
+				Debug.Log ("change color");
+				PS.Pause();
+				heroR.material.color = Color.grey;
+				hit = false;
+				timer = 0f;
+			}
+		}
+
+
+
 	}
 
 	void OnCollisionEnter (Collision col){
-		
-		if(col.transform.gameObject.tag == "bullet"){
+
+		Debug.Log ("collision");
+
+		if(col.collider.tag == "EBullet"){
 			//HBar
-			Debug.Log("bullet hit");
+			Debug.Log("hit by bullet");
+			//Destroy(col.gameObject);
+			col.gameObject.SetActive(false);
 			Damage ();
 		}
+
+		if(col.collider.tag == "EWeapon"){
+			//HBar
+			Debug.Log("hit by melee");
+			Damage ();
+		}
+
+		//if(col.transform.gameObject.tag == "meleeEnemy"){
+			//HBar
+		//	Debug.Log("hit by enemy?");
+			//Damage ();
+		//}
+
+		//if (col.collider.tag == "EWeapon") {
+		//	Debug.Log ("this one");
+		//}
+
 	}
 
 	void Damage(){	//input damage type based on what hit it. Also replace HBar.getComponent<RectTransform>().sizeDelta with a variable or something.
@@ -105,6 +151,12 @@ public class controller : MonoBehaviour {
 		//HBar.gameObject.transform.x = HBar.gameObject.transform.x - 10;
 		//HBar.transform.x = HBar.transform.x - 10;
 		if (phase < 3) {
+
+			hit = true;
+			heroR.material.color = Color.red;
+
+			PS.Play ();
+
 			if (HBar.GetComponent<RectTransform> ().sizeDelta.x <= (initialHBar.x/numHits)+1) {
 				if (phase < 2) { 
 					//HBar.transform.Translate (100, 0, 0);
@@ -117,9 +169,9 @@ public class controller : MonoBehaviour {
 				if(phase <= 2){
 					phase++;
 					if (phase == 2)
-						heroR.material.color = Color.blue;
+						heroR.material.color = Color.green;
 					else if (phase == 3)
-						heroR.material.color = Color.red;
+						heroR.material.color = Color.black;
 				}
 			} 
 			else {
